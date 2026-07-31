@@ -72,29 +72,29 @@ const AccountProfile = ({user, btnTitle}:Props) => {
             }
             fileReader.readAsDataURL(file);
         }
-
-
-
     } 
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-
         const blob = values.profile_photo;
         const hasImageChanged = isBase64Image(blob);
 
         if(hasImageChanged) {
           const imgRes = await startUpload(files);
 
-          if (imgRes && imgRes[0]?.fileUrl) {
-            values.profile_photo = imgRes[0].fileUrl;
+          const uploadedUrl = (imgRes?.[0] as any)?.url || (imgRes?.[0] as any)?.fileUrl;
+          if (uploadedUrl) {
+            values.profile_photo = uploadedUrl;
           }
         }
 
-        // TODO: update user profile
-
-        await updateUser({username:values.username, name:values.name, bio:values.bio, image:values.profile_photo, userId:user.id, path: pathname});
+        await updateUser({
+          username: values.username, 
+          name: values.name, 
+          bio: values.bio, 
+          image: values.profile_photo, 
+          userId: user.id, 
+          path: pathname
+        });
 
         if(pathname === '/profile/edit'){
           router.back();
@@ -102,7 +102,6 @@ const AccountProfile = ({user, btnTitle}:Props) => {
           router.push('/');
         }
       }
-
 
   return (
     <Form {...form}>
@@ -152,7 +151,7 @@ const AccountProfile = ({user, btnTitle}:Props) => {
           name='name'
           render={({ field }) => (
             <FormItem className='flex w-full flex-col gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
+              <FormLabel className='text-base-semibold text-[var(--text-primary)]'>
                 Name
               </FormLabel>
               <FormControl>
@@ -167,12 +166,12 @@ const AccountProfile = ({user, btnTitle}:Props) => {
           )}
         />
 
-<FormField
+        <FormField
           control={form.control}
           name='username'
           render={({ field }) => (
             <FormItem className='flex w-full flex-col gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
+              <FormLabel className='text-base-semibold text-[var(--text-primary)]'>
                 Username
               </FormLabel>
               <FormControl>
@@ -192,7 +191,7 @@ const AccountProfile = ({user, btnTitle}:Props) => {
           name='bio'
           render={({ field }) => (
             <FormItem className='flex w-full flex-col gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
+              <FormLabel className='text-base-semibold text-[var(--text-primary)]'>
                 Bio
               </FormLabel>
               <FormControl>
@@ -207,7 +206,9 @@ const AccountProfile = ({user, btnTitle}:Props) => {
           )}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className='bg-primary-500 hover:opacity-90 text-light-1 rounded-xl py-3'>
+          {btnTitle}
+        </Button>
       </form>
     </Form>
   )

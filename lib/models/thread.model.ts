@@ -1,31 +1,40 @@
 import mongoose from "mongoose";
 
-
 const threadSchema = new mongoose.Schema({
-    text: {type: String, required: true},
-    author: {type: mongoose.Schema.Types.ObjectId, 
-            ref:'Uesr',
-            required: true},
-    community:{
+    text: { type: String, required: true },
+    author: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User',
+        required: true
+    },
+    community: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Community'
     },
-    createdAt:{
+    createdAt: {
         type: Date,
         default: Date.now
     },
     parentId: {
         type: String
     },
-    children:[
+    children: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Thread'
         }
+    ],
+    likes: [
+        {
+            type: String
+        }
     ]
-    
 });
 
-const Thread = mongoose.models.Thread || mongoose.model('Thread', threadSchema);
+if (mongoose.models && mongoose.models.Thread) {
+    delete (mongoose.models as any).Thread;
+}
+
+const Thread = mongoose.model('Thread', threadSchema);
 
 export default Thread;
