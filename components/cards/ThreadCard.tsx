@@ -57,6 +57,7 @@ const ThreadCard = ({
   const [likesCount, setLikesCount] = useState(uniqueLikes.length);
   const [isReposted, setIsReposted] = useState(false);
   const [repostCount, setRepostCount] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const isProfilePage = pathname.includes("/profile");
@@ -112,12 +113,14 @@ const ThreadCard = ({
 
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this thread globally?")) {
+      setIsDeleting(true);
       try {
         await deleteThread(id, pathname);
         showToast("Thread deleted globally!");
       } catch (error) {
         console.error("Failed to delete thread:", error);
         showToast("Failed to delete thread");
+        setIsDeleting(false);
       }
     }
   };
@@ -127,8 +130,8 @@ const ThreadCard = ({
       className={`relative flex w-full flex-col transition-all duration-200 ${
         isComment
           ? "px-0 sx:px-7"
-          : "rounded-2xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6 shadow-md backdrop-blur-md"
-      }`}
+          : "rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-md backdrop-blur-md"
+      } ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
     >
       {toastMessage && (
         <div className='absolute top-3 right-4 z-20 rounded-xl border border-primary-500/30 bg-primary-500/90 px-3.5 py-1.5 text-subtle-semibold text-light-1 shadow-lg backdrop-blur-md transition-all animate-in fade-in zoom-in-95'>
@@ -169,7 +172,7 @@ const ThreadCard = ({
                 {community && (
                   <Link
                     href={`/communities/${community.id}`}
-                    className='flex items-center gap-1 rounded-full border border-[var(--card-border)] bg-[#12141a]/10 dark:bg-white/[0.04] px-2.5 py-1 text-subtle-medium text-[var(--text-secondary)] transition hover:bg-black/5 dark:hover:bg-white/[0.08]'
+                    className='flex items-center gap-1 rounded-full border border-[var(--border-color)] bg-[#12141a]/10 dark:bg-white/[0.04] px-2.5 py-1 text-subtle-medium text-[var(--text-secondary)] transition hover:bg-black/5 dark:hover:bg-white/[0.08]'
                   >
                     <span className='max-w-[120px] truncate'>{community.name}</span>
                   </Link>
@@ -179,11 +182,16 @@ const ThreadCard = ({
                   <button
                     type='button'
                     onClick={handleDelete}
-                    className='flex cursor-pointer items-center gap-1 rounded-lg p-1.5 text-[var(--text-muted)] transition hover:bg-rose-500/20 hover:text-rose-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500'
+                    disabled={isDeleting}
+                    className='flex cursor-pointer items-center gap-1 rounded-lg p-1.5 text-[var(--text-muted)] transition hover:bg-rose-500/20 hover:text-rose-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 disabled:opacity-50'
                     aria-label='Delete thread'
                     title='Delete thread globally'
                   >
-                    <Image src='/assets/delete.svg' alt='delete icon' width={18} height={18} className='opacity-70 hover:opacity-100 dark:brightness-200 brightness-50' />
+                    {isDeleting ? (
+                      <div className='h-4 w-4 animate-spin rounded-full border-2 border-rose-500 border-t-transparent' />
+                    ) : (
+                      <Image src='/assets/delete.svg' alt='delete icon' width={18} height={18} className='opacity-70 hover:opacity-100 dark:brightness-200 brightness-50' />
+                    )}
                   </button>
                 )}
               </div>

@@ -13,6 +13,7 @@ function LeftSidebar() {
   const pathname = usePathname();
   const { userId } = useAuth();
   const [activityCount, setActivityCount] = useState<number>(0);
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -103,17 +104,25 @@ function LeftSidebar() {
         <SignedIn>
           <SignOutButton signOutCallback={() => router.push("/sign-in")}>
             <button
-              className='flex w-full cursor-pointer items-center justify-start gap-4 rounded-xl px-4 py-3.5 text-[var(--text-primary)] opacity-80 hover:opacity-100 transition-all hover:bg-rose-500/10 hover:text-rose-500 border border-transparent hover:border-rose-500/20'
+              onClick={() => setIsLoggingOut(true)}
+              disabled={isLoggingOut}
+              className='flex w-full cursor-pointer items-center justify-start gap-4 rounded-xl px-4 py-3.5 text-[var(--text-primary)] opacity-80 hover:opacity-100 transition-all hover:bg-rose-500/10 hover:text-rose-500 border border-transparent hover:border-rose-500/20 disabled:opacity-50'
               aria-label='Log out'
             >
-              <Image
-                src='/assets/logout.svg'
-                width={24}
-                height={24}
-                alt='logout'
-                className='dark:brightness-200 brightness-50'
-              />
-              <p className='text-body-medium max-lg:hidden'>Logout</p>
+              {isLoggingOut ? (
+                <div className='h-5 w-5 animate-spin rounded-full border-2 border-rose-500 border-t-transparent' />
+              ) : (
+                <Image
+                  src='/assets/logout.svg'
+                  width={24}
+                  height={24}
+                  alt='logout'
+                  className='dark:brightness-200 brightness-50'
+                />
+              )}
+              <p className='text-body-medium max-lg:hidden'>
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </p>
             </button>
           </SignOutButton>
         </SignedIn>
