@@ -1,133 +1,141 @@
-# Threads Clone (Next.js 13)
+# Threads - Modern Full-Stack Social Platform
 
-A full-stack Threads-style social app built with the Next.js App Router, Clerk authentication, MongoDB + Mongoose, UploadThing, Tailwind CSS, and shadcn/ui.
+A high-performance, full-stack **Threads** social media web application built with **Next.js 13 (App Router)**, **TypeScript**, **Clerk Authentication**, **MongoDB + Mongoose**, **UploadThing**, **Tailwind CSS**, and **shadcn/ui**.
 
-## Tech Stack
+🌐 **Live Demo:** [https://threads-app-three-liart.vercel.app](https://threads-app-three-liart.vercel.app)  
+📦 **GitHub Repository:** [https://github.com/Neelesh19634/Threads](https://github.com/Neelesh19634/Threads)
 
-- Next.js 13 (App Router + Server Actions)
-- TypeScript
-- Clerk (auth + org switcher)
-- MongoDB + Mongoose
-- UploadThing (profile image upload)
-- Tailwind CSS + shadcn/ui
-- React Hook Form + Zod
+---
 
-## Implemented Features
+## ✨ Features
 
-- Clerk sign-in/sign-up flows
-- Onboarding form to complete profile
-- Create thread
-- Home feed with top-level threads
-- Thread detail page with nested replies
-- Comment on a thread
-- Profile page with tabs and user thread list
-- Responsive navigation (top, left, bottom bars)
+- 🔐 **Authentication & Onboarding:** Multi-tenant auth via Clerk with full sign-in/sign-up flows, organization switcher, and mandatory profile onboarding.
+- 🎨 **Custom Theme Engine:**
+  - **Light, Dark & System Modes:** Seamless toggle supporting OS preference auto-detection.
+  - **Zero-FOUC (Flash of Unstyled Content):** Synchronous `<head>` blocking script for instantaneous theme rendering on page loads.
+  - **Dynamic Theme Accents:** Live accent color picker (**Obsidian Indigo**, **Cyber Emerald**, **Electric Blue**, **Sunset Amber**) persisted in `localStorage`.
+- 🧬 **Unique Custom Branding:** Custom vector **Interlocking Quantum Threads** logo and matching browser tab favicon (`app/icon.svg`).
+- 🗑️ **Author Thread Deletion:** Global thread deletion available exclusively inside the author's Profile section. Deletes the target thread, recursively purges all nested replies, and updates MongoDB globally.
+- 🔔 **Activity & Live Unread Badges:** Live unread notification badges in the navigation sidebars with automatic read-state clearing when visiting `/activity`.
+- 🔍 **Search & Creators:** Real-time debounced creator search by name and username.
+- 👥 **Communities:** Community discovery, member avatar lists, and community creation workflows.
+- ⚡ **Global Loading UI & Instant Feedback:** Next.js route loading screens (`loading.tsx`), delete spinner states, and logout loading feedback.
+- 📱 **Responsive Glassmorphism Layout:** Sleek obsidian dark and crisp light layouts with hardware-accelerated momentum scrolling on sidebars.
 
-## Project Routes
+---
 
-### Public/Auth
+## 🛠️ Tech Stack
 
-- `/sign-in/[[...sign-in]]`
-- `/sign-up/[[...sign-up]]`
+- **Framework:** [Next.js 13](https://nextjs.org/) (App Router + Server Actions)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Database:** [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) + [Mongoose](https://mongoosejs.com/)
+- **Authentication:** [Clerk](https://clerk.com/)
+- **Media Uploads:** [UploadThing](https://uploadthing.com/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) + CSS Custom Properties
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)
+- **Form Handling:** [React Hook Form](https://react-hook-form.com/) + [Zod Validation](https://zod.dev/)
+- **Deployment:** [Vercel](https://vercel.com/)
 
-### Main App
+---
 
-- `/` home feed
-- `/onboarding` complete user profile
-- `/create-thread` create a new thread
-- `/thread/[id]` thread detail + comments
-- `/profile/[id]` user profile
-- `/search` page scaffold exists
-- `/activity` page scaffold exists
-- `/communities` page scaffold exists
+## 📂 Project Structure
 
-### API
-
-- `/api/uploadthing` UploadThing route handler
-
-## Folder Overview
-
-- `app/`: App Router layouts, pages, API routes
-- `components/`: shared UI, cards, forms, shadcn primitives
-- `lib/actions/`: server actions for users and threads
-- `lib/models/`: Mongoose schemas
-- `lib/validation/`: Zod schemas
-- `constants/`: sidebar and tab configuration
-
-## Environment Variables
-
-Create `.env.local` in the project root.
-
-Required by this codebase:
-
-```env
-MONGODB_URL=
+```text
+├── app/
+│   ├── (auth)/                # Auth layouts, sign-in, sign-up, onboarding
+│   ├── (root)/                # Main application routes
+│   │   ├── activity/          # Activity notifications feed
+│   │   ├── communities/       # Community discovery & management
+│   │   ├── create-thread/     # Thread creation page
+│   │   ├── profile/[id]/      # User profile + Appearance settings & Thread Deletion
+│   │   ├── search/            # Creator search page
+│   │   ├── thread/[id]/       # Thread detail & nested comments
+│   │   ├── loading.tsx        # Global route loading UI
+│   │   └── page.tsx           # Home feed
+│   ├── globals.css            # CSS custom properties & theme tokens
+│   └── icon.svg               # SVG Favicon icon
+├── components/
+│   ├── cards/                 # ThreadCard, UserCard, CommunityCard
+│   ├── forms/                 # PostThreads, Comment, AccountProfile
+│   └── shared/                # Topbar, LeftSidebar, RightSidebar, Bottombar, ThemeAccentPicker
+├── lib/
+│   ├── actions/               # Server Actions (thread, user, community)
+│   ├── models/                # Mongoose schemas (Thread, User, Community)
+│   └── validation/            # Zod validation schemas
+├── public/assets/             # SVG icons & logo assets
+└── middleware.ts              # Clerk authentication middleware
 ```
 
-Required by integrated services:
+---
 
-- Clerk keys and URLs for Next.js (`@clerk/nextjs`)
-- UploadThing server/client keys (`uploadthing`, `@uploadthing/react`)
+## 🚀 Getting Started
 
-Use your provider dashboard values for these variables.
+### Prerequisites
 
-## Local Setup
+- Node.js 18+ installed
+- MongoDB Atlas database cluster
+- Clerk project API keys
+- UploadThing account keys
 
-1. Install dependencies:
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Neelesh19634/Threads.git
+cd Threads
+```
+
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-2. Add `.env.local` with MongoDB, Clerk, and UploadThing values.
+### 3. Environment Setup
 
-3. Start development server:
+Create a `.env.local` file in the root directory:
+
+```env
+MONGODB_URL="your-mongodb-connection-string"
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your-clerk-publishable-key"
+CLERK_SECRET_KEY="your-clerk-secret-key"
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
+
+UPLOADTHING_SECRET="your-uploadthing-secret"
+UPLOADTHING_APP_ID="your-uploadthing-app-id"
+```
+
+### 4. Run the Development Server
 
 ```bash
 npm run dev
 ```
 
-4. Open:
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-```text
-http://localhost:3000
-```
+---
 
-## Available Scripts
+## 📜 Available Scripts
 
-```bash
-npm run dev
-npm run build
-npm run start
-npm run lint
-```
+| Script | Description |
+| :--- | :--- |
+| `npm run dev` | Runs the Next.js development server on port 3000 |
+| `npm run build` | Builds the optimized production bundle |
+| `npm run start` | Starts the production server |
+| `npm run lint` | Runs ESLint type checks |
 
-## Data Model Summary
+---
 
-### User
+## 🤝 Contributing
 
-- `id` (Clerk user id)
-- `username`, `name`, `bio`, `image`
-- `threads` (references to Thread)
-- `onboarded` flag
+Contributions, issues, and feature requests are welcome!  
+Feel free to check out the [issues page](https://github.com/Neelesh19634/Threads/issues).
 
-### Thread
+---
 
-- `text`
-- `author` (reference to User)
-- `parentId` (string; null/undefined for top-level)
-- `children` (references to Thread replies)
-- `community` (reserved, currently not implemented)
+## 📄 License
 
-## Current Status / Limitations
-
-- Community flows are scaffolded but not implemented end-to-end.
-- Search, Activity, and Communities pages are currently placeholders.
-- Middleware references webhook paths, but no Clerk webhook API route is present in this repository.
-- Some small typos/inconsistencies exist in current source (for example: `ref: 'Uesr'` in thread schema, and `webhood` in ignored middleware route).
-
-## Notes for Contributors
-
-- This project uses Next.js Server Actions from `lib/actions`.
-- UI styling relies on utility classes in `app/globals.css` and Tailwind theme extensions.
-- Image remote patterns are configured in `next.config.mjs` for Clerk, UploadThing, and placeholder hosts.
+This project is open-source and available under the [MIT License](LICENSE).
