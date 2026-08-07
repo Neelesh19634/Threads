@@ -11,7 +11,8 @@
     --text-primary: #0f172a;
     --text-secondary: #334155;
     --text-muted: #64748b;
-    --border-color: rgba(0, 0, 0, 0.1);
+    --border-color: rgba(0, 0, 0, 0.12);
+    --focus-border: #000000;
     --topbar-bg: rgba(255, 255, 255, 0.92);
     --sidebar-bg: #ffffff;
     --primary-500: #877eff;
@@ -27,6 +28,7 @@
     --text-secondary: #e2e8f0;
     --text-muted: #64748b;
     --border-color: rgba(255, 255, 255, 0.08);
+    --focus-border: #ffffff;
     --topbar-bg: rgba(11, 12, 14, 0.88);
     --sidebar-bg: #0b0c0e;
   }
@@ -125,6 +127,11 @@
     background-color: var(--card-bg);
     border-color: var(--border-color);
     @apply flex items-center gap-3 rounded-xl border px-4 py-2.5 transition-all;
+  }
+
+  .searchbar:focus-within {
+    border-color: var(--focus-border) !important;
+    box-shadow: 0 0 0 1px var(--focus-border) !important;
   }
 
   .searchbar_input {
@@ -229,7 +236,12 @@
 }
 
 .no-focus {
-  @apply focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0 focus-visible:outline-none !important;
+  @apply focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:outline-none focus:ring-0 focus:outline-none !important;
+}
+
+.focus-border-theme:focus-within {
+  border-color: var(--focus-border) !important;
+  box-shadow: 0 0 0 1px var(--focus-border) !important;
 }
 
 /* Account Profile */
@@ -245,14 +257,25 @@
 .account-form_input {
   background-color: var(--card-bg) !important;
   color: var(--text-primary) !important;
-  @apply border border-white/[0.08] transition focus:border-white/20 !important;
+  border-color: var(--border-color) !important;
+  @apply border transition-all !important;
+}
+
+.account-form_input:focus {
+  border-color: var(--focus-border) !important;
+  box-shadow: 0 0 0 1px var(--focus-border) !important;
 }
 
 /* Comment Form */
 .comment-form {
   background-color: var(--card-bg) !important;
   border-color: var(--border-color) !important;
-  @apply mt-6 flex items-center gap-4 rounded-xl border px-4 py-3 max-xs:flex-col !important;
+  @apply mt-6 flex items-center gap-4 rounded-xl border px-4 py-3 max-xs:flex-col transition-all !important;
+}
+
+.comment-form:focus-within {
+  border-color: var(--focus-border) !important;
+  box-shadow: 0 0 0 1px var(--focus-border) !important;
 }
 
 .comment-form_btn {

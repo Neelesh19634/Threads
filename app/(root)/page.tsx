@@ -54,6 +54,7 @@ export default async function Home() {
               currentUser={user?.id || ""}
               parentId={post.parentId}
               content={post.text}
+              image={post.image}
               author={post.author}
               community={post.community}
               createdAt={post.createdAt}

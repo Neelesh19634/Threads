@@ -26,6 +26,7 @@ const Page = async({params}:{params:{id:string}}) => {
                 currentUser = {user?.id || ""}
                 parentId = {thread.parentId}
                 content= {thread.text}
+                image= {thread.image}
                 author = {thread.author}
                 community = {thread.community}
                 createdAt = {thread.createdAt}
@@ -36,8 +37,8 @@ const Page = async({params}:{params:{id:string}}) => {
 
             <div className="mt-7">
                 <Comment
-                    threadId={thread.id}
-                    currentUserImg = {user.imageUrl}
+                    threadId={thread._id}
+                    currentUserImg = {userInfo?.image || user.imageUrl}
                     currentUserId = {JSON.stringify(userInfo._id)}
                 />
             </div>
@@ -49,6 +50,7 @@ const Page = async({params}:{params:{id:string}}) => {
                     currentUser = {user?.id || ""}
                     parentId = {childItem.parentId}
                     content= {childItem.text}
+                    image= {childItem.image}
                     author = {childItem.author}
                     community = {childItem.community}
                     createdAt = {childItem.createdAt}

@@ -3,7 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { AlertTriangle, X } from "lucide-react";
 import { likeThread, deleteThread } from "@/lib/actions/thread.actions";
 import { formatTimeAgo } from "@/lib/utils";
 
@@ -12,6 +14,7 @@ interface Props {
   currentUser: string;
   parentId: string | null;
   content: string;
+  image?: string;
   author: {
     name: string;
     image: string;
@@ -38,6 +41,7 @@ const ThreadCard = ({
   currentUser,
   parentId,
   content,
+  image,
   author,
   community,
   createdAt,
@@ -58,7 +62,26 @@ const ThreadCard = ({
   const [isReposted, setIsReposted] = useState(false);
   const [repostCount, setRepostCount] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isImageOpen, setIsImageOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsImageOpen(false);
+      }
+    };
+    if (isImageOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isImageOpen]);
 
   const isProfilePage = pathname.includes("/profile");
   const isAuthor =
@@ -111,17 +134,16 @@ const ThreadCard = ({
     }
   };
 
-  const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this thread globally?")) {
-      setIsDeleting(true);
-      try {
-        await deleteThread(id, pathname);
-        showToast("Thread deleted globally!");
-      } catch (error) {
-        console.error("Failed to delete thread:", error);
-        showToast("Failed to delete thread");
-        setIsDeleting(false);
-      }
+  const confirmDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteThread(id, pathname);
+      showToast("Thread deleted!");
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Failed to delete thread:", error);
+      showToast("Failed to delete thread");
+      setIsDeleting(false);
     }
   };
 
@@ -181,7 +203,7 @@ const ThreadCard = ({
                 {canDelete && (
                   <button
                     type='button'
-                    onClick={handleDelete}
+                    onClick={() => setShowDeleteModal(true)}
                     disabled={isDeleting}
                     className='flex cursor-pointer items-center gap-1 rounded-lg p-1.5 text-[var(--text-muted)] transition hover:bg-rose-500/20 hover:text-rose-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 disabled:opacity-50'
                     aria-label='Delete thread'
@@ -198,6 +220,26 @@ const ThreadCard = ({
             </div>
 
             <p className='mt-2.5 text-sm-regular leading-relaxed text-[var(--text-primary)]'>{content}</p>
+
+            {image && (
+              <div
+                onClick={() => setIsImageOpen(true)}
+                className='group relative mt-3.5 h-64 sm:h-96 w-full cursor-pointer overflow-hidden rounded-2xl border border-[var(--border-color)] bg-black/5 dark:bg-white/5 shadow-md transition-all hover:opacity-95'
+                title='Click to view full photo'
+              >
+                <Image
+                  src={image}
+                  alt='thread attachment'
+                  fill
+                  className='object-cover transition-transform duration-300 group-hover:scale-105'
+                />
+                <div className='absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity group-hover:opacity-100'>
+                  <span className='rounded-full bg-black/70 px-4 py-1.5 text-subtle-semibold text-white backdrop-blur-md shadow-lg'>
+                    Click to view full photo
+                  </span>
+                </div>
+              </div>
+            )}
 
             <div className={`${isComment && "mb-8"} mt-4 flex flex-col gap-3`}>
               <div className='flex items-center gap-5'>
@@ -287,6 +329,89 @@ const ThreadCard = ({
           </div>
         </div>
       </div>
+
+      {/* In-Website Custom Delete Confirmation Modal (Rendered on document.body via Portal for full-page coverage) */}
+      {showDeleteModal && mounted && createPortal(
+        <div className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md animate-in fade-in duration-200'>
+          <div className='relative w-full max-w-md rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-2xl backdrop-blur-xl animate-in zoom-in-95 duration-200'>
+            <div className='flex items-start gap-4'>
+              <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-rose-500/10 border border-rose-500/20'>
+                <AlertTriangle className='h-6 w-6 text-rose-500' />
+              </div>
+              <div className='flex flex-col gap-1'>
+                <h3 className='text-heading4-bold text-[var(--text-primary)]'>
+                  Delete Thread?
+                </h3>
+                <p className='text-small-regular text-[var(--text-muted)] leading-relaxed'>
+                  Are you sure you want to delete this thread ? This action cannot be undone.
+                </p>
+              </div>
+            </div>
+
+            <div className='mt-6 flex items-center justify-end gap-3'>
+              <button
+                type='button'
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className='rounded-xl border border-[var(--border-color)] bg-transparent px-4 py-2.5 text-subtle-semibold text-[var(--text-primary)] transition hover:bg-black/10 dark:hover:bg-white/10 active:scale-95 disabled:opacity-50'
+              >
+                Cancel
+              </button>
+              <button
+                type='button'
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                className='flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-subtle-semibold text-white shadow-lg shadow-rose-600/30 transition hover:bg-rose-700 active:scale-95 disabled:opacity-50'
+              >
+                {isDeleting ? (
+                  <>
+                    <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Full-Screen Image Lightbox Modal */}
+      {isImageOpen && image && mounted && createPortal(
+        <div
+          onClick={() => setIsImageOpen(false)}
+          className='fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-xl animate-in fade-in duration-200'
+        >
+          {/* Close Button */}
+          <button
+            type='button'
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsImageOpen(false);
+            }}
+            className='absolute top-5 right-5 z-[10001] flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 hover:scale-110 active:scale-95 focus:outline-none ring-1 ring-white/20'
+            aria-label='Close full photo'
+            title='Close photo (Esc)'
+          >
+            <X className='h-6 w-6' />
+          </button>
+
+          {/* Full Image Box */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className='relative max-h-[90vh] max-w-[92vw] overflow-hidden rounded-2xl border border-white/10 bg-black/50 shadow-2xl backdrop-blur-md animate-in zoom-in-95 duration-200'
+          >
+            <img
+              src={image}
+              alt='Expanded thread photo'
+              className='max-h-[85vh] max-w-[92vw] object-contain rounded-2xl'
+            />
+          </div>
+        </div>,
+        document.body
+      )}
     </article>
   );
 };

@@ -20,10 +20,10 @@ import Image from "next/image"
 import {isBase64Image} from '@/lib/utils'
 import { useState } from "react"
 import { ChangeEvent } from "react"
-import { useUploadThing } from "@/lib/uploadThing"
+import { uploadToCloudinary } from "@/lib/actions/upload.action"
 import { updateUser } from "@/lib/actions/user.actions"
 import { usePathname, useRouter } from "next/navigation"
- 
+
 interface Props{
     user:{
         id: string,
@@ -40,8 +40,7 @@ const AccountProfile = ({user, btnTitle}:Props) => {
 
   const router = useRouter();
   const pathname = usePathname();
-
-  const {startUpload} = useUploadThing("media");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [files, setFiles] = useState<File[]>([]);
     
@@ -75,31 +74,36 @@ const AccountProfile = ({user, btnTitle}:Props) => {
     } 
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
-        const blob = values.profile_photo;
-        const hasImageChanged = isBase64Image(blob);
+        setIsSubmitting(true);
+        try {
+          const blob = values.profile_photo;
+          const hasImageChanged = isBase64Image(blob);
 
-        if(hasImageChanged) {
-          const imgRes = await startUpload(files);
-
-          const uploadedUrl = (imgRes?.[0] as any)?.url || (imgRes?.[0] as any)?.fileUrl;
-          if (uploadedUrl) {
-            values.profile_photo = uploadedUrl;
+          if(hasImageChanged) {
+            const uploadedUrl = await uploadToCloudinary(blob);
+            if (uploadedUrl) {
+              values.profile_photo = uploadedUrl;
+            }
           }
-        }
 
-        await updateUser({
-          username: values.username, 
-          name: values.name, 
-          bio: values.bio, 
-          image: values.profile_photo, 
-          userId: user.id, 
-          path: pathname
-        });
+          await updateUser({
+            username: values.username, 
+            name: values.name, 
+            bio: values.bio, 
+            image: values.profile_photo, 
+            userId: user.id, 
+            path: pathname
+          });
 
-        if(pathname === '/profile/edit'){
-          router.back();
-        }else{
-          router.push('/');
+          if(pathname === '/profile/edit'){
+            router.back();
+          }else{
+            router.push('/');
+          }
+        } catch (error) {
+          console.error("Failed to update profile:", error);
+        } finally {
+          setIsSubmitting(false);
         }
       }
 

@@ -4,7 +4,6 @@ export default authMiddleware({
   publicRoutes: [
     "/",
     "/api/webhook/clerk",
-    "/api/uploadthing",
     "/icon.svg",
     "/favicon.svg",
     "/assets/(.*)",
@@ -13,7 +12,6 @@ export default authMiddleware({
   ],
   ignoredRoutes: [
     "/api/webhook/clerk",
-    "/api/uploadthing",
     "/icon.svg",
     "/favicon.svg",
     "/assets/(.*)",

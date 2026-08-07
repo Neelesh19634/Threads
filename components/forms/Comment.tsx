@@ -38,10 +38,21 @@ const Comment = ({ threadId, currentUserImg, currentUserId }: Props) => {
   const onSubmit = async (values: z.infer<typeof CommentValidation>) => {
     setIsSubmitting(true);
     try {
+      let userIdToPass = currentUserId;
+      if (typeof currentUserId === "string") {
+        try {
+          if (currentUserId.startsWith('"') || currentUserId.startsWith('{')) {
+            userIdToPass = JSON.parse(currentUserId);
+          }
+        } catch (e) {
+          userIdToPass = currentUserId;
+        }
+      }
+
       await addCommentToThread(
         threadId,
         values.thread,
-        JSON.parse(currentUserId),
+        userIdToPass,
         pathname
       );
 

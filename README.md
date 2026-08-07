@@ -1,73 +1,84 @@
-# Threads — Enterprise Full-Stack Social Platform
+# Threads — Full-Stack Micro-Blogging Platform with Local AI & Cloudinary
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/Vercel-Deployment%20Passed-success?logo=vercel)](https://threads-app-three-liart.vercel.app)
-[![Version](https://img.shields.io/badge/version-1.0.0-indigo.svg)](https://github.com/Neelesh19634/Threads)
+[![Version](https://img.shields.io/badge/version-1.1.0-indigo.svg)](https://github.com/Neelesh19634/Threads)
 [![Next.js](https://img.shields.io/badge/Next.js-13.4%20(App%20Router)-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Ollama](https://img.shields.io/badge/AI-Ollama%20(Llama%203.2)-FF6F00?logo=ollama)](https://ollama.com)
+[![Cloudinary](https://img.shields.io/badge/Storage-Cloudinary-3448C5?logo=cloudinary)](https://cloudinary.com)
 
-> A high-performance, real-time micro-blogging social platform built with Next.js 13 Server Actions, Clerk authentication, MongoDB, and an adaptive zero-FOUC design system.
+> A production-grade, real-time micro-blogging social media application built with Next.js 13 Server Actions, MongoDB, Clerk Authentication, Cloudinary media pipeline, and an integrated local AI writing assistant powered by Ollama (`llama3.2`).
 
-🌐 **Live Demo:** [https://threads-app-three-liart.vercel.app](https://threads-app-three-liart.vercel.app)  
-📦 **Repository:** [https://github.com/Neelesh19634/Threads](https://github.com/Neelesh19634/Threads)
+🌐 **Live Demo:** [threads-app-three-liart.vercel.app](https://threads-app-three-liart.vercel.app)  
+📦 **GitHub Repository:** [github.com/Neelesh19634/Threads](https://github.com/Neelesh19634/Threads)
 
 ---
 
 ## 📋 Table of Contents
 
-- [Overview / Why This Project Exists](#-overview--why-this-project-exists)
+- [Overview & Key Highlights](#-overview--key-highlights)
 - [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
 - [Architecture Overview](#-architecture-overview)
-- [Quick Start / Getting Started](#-quick-start--getting-started)
+- [Getting Started & Local Setup](#-getting-started--local-setup)
   - [Prerequisites](#prerequisites)
-  - [Installation & Setup](#installation--setup)
-- [Environment Variables & Configuration](#-environment-variables--configuration)
-- [Usage Examples & Core Workflows](#-usage-examples--core-workflows)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
+  - [Installation](#installation)
+  - [Ollama Local AI Setup](#ollama-local-ai-setup)
+- [Environment Variables](#-environment-variables)
+- [Core Engineering Highlights](#-core-engineering-highlights)
 - [License](#-license)
 
 ---
 
-## 🎯 Overview / Why This Project Exists
+## 🎯 Overview & Key Highlights
 
-**Threads** was designed to solve the need for a modern, scalable, and responsive micro-blogging social media platform. Existing legacy platforms often suffer from slow page transitions, inconsistent theme switching flashes, and complex user onboarding.
+**Threads** is a full-stack, enterprise-ready micro-blogging platform designed for performance, security, and exceptional user experience. Built with modern web architecture principles, it addresses common bottlenecks in traditional social applications—such as slow server roundtrips, flash of unstyled content (FOUC), and cumbersome content creation workflows—by integrating server-side rendering, Server Actions, Cloudinary media optimization, and a local privacy-focused LLM assistant.
 
-This application provides a seamless experience for creators and communities:
-- **Instantaneous Rendering:** Leverages Next.js Server Components and Server Actions to minimize client-side bundle size.
-- **Zero-FOUC (Flash of Unstyled Content) Engine:** Guarantees dark/light mode switches execute synchronously in the browser `<head>` before initial DOM paint.
-- **Comprehensive Community Ecosystem:** Empowers creators to discuss topics, discover peers, create communities, and manage content with granular author permissions.
+### Why This Project Stands Out:
+- 🤖 **On-Device Local AI Generation:** Integrates local LLM inference (`llama3.2`) via Ollama directly into the post creation box for instant drafting, polishing, and expansion with zero API cost or privacy leaks.
+- 🖼️ **Cloudinary Media Infrastructure:** Cloud-native image uploads for user profiles and thread media with client-side base64 previews and full-screen React Portal lightboxes.
+- 🎨 **Zero-FOUC Theme Engine:** Custom CSS variable design system supporting Light, Dark, and System modes with live 4-color accent selection (**Obsidian Indigo**, **Cyber Emerald**, **Electric Blue**, **Sunset Amber**).
+- ⚡ **Optimized Server Performance:** Built on Next.js 13 App Router, leveraging Server Components and Server Actions to minimize client JavaScript bundle size and ensure ultra-fast feed rendering.
 
 ---
 
 ## ✨ Key Features
 
-- 🔑 **Multi-Tenant Auth & Onboarding:** Secure Clerk-powered authentication with custom profile creation and onboarding workflows.
-- 🎨 **Adaptive Zero-FOUC Theme Engine:**
-  - Synchronous light/dark/system mode toggle with zero initial paint flash.
-  - Live 4-color accent selection (**Obsidian Indigo**, **Cyber Emerald**, **Electric Blue**, **Sunset Amber**) persisted in local state.
-- 💬 **Interactive Threads & Nested Reply Trees:** Create top-level threads, join nested comment discussions, like posts with optimistic updates, repost, and copy share links.
-- 🗑️ **Author-Scoped Recursive Deletion:** Thread deletion available exclusively to authors on their profile page, executing recursive MongoDB database purging for all child replies.
-- 🔔 **Activity Feed & Real-Time Badges:** Unread notification indicators in sidebars that automatically clear upon visiting the Activity center.
-- 🔍 **Creator Search & Communities:** Real-time debounced user search and community creation & management modules.
-- ⚡ **Global Loading & Interaction Feedback:** Custom Next.js route loading screens (`loading.tsx`), button spinner states, and toast notifications.
+### 🤖 Local AI Writing Assistant (Ollama)
+- **Embedded Assistance Tag:** Click **`Use Assistance`** inside the thread text area to trigger an inline AI prompt bar.
+- **Smart Actions:** Generate posts from topics, polish drafts, or adjust content tone using local **Llama 3.2** inference.
+- **Offline Resiliency:** Automatic health checking and clear terminal commands if Ollama is offline.
+
+### 🖼️ Media & Image Experience
+- **Cloudinary Image Uploads:** Seamless image attachment for threads and profile pictures using Cloudinary Server Actions.
+- **Full-Screen Lightbox Modal:** Click any posted thread image to view it in full screen via React Portals (`createPortal`), complete with backdrop blur, `Esc` key listener, and close controls.
+
+### 💬 Micro-Blogging & Social Interactions
+- **Nested Thread Conversations:** Infinite multi-level reply trees for deep discussions.
+- **Like & Repost System:** Instant like toggling with optimistic UI updates, repost counting, and clipboard share link copying.
+- **Author-Scoped Purging:** Global thread deletion reserved for post authors on their profile, executing recursive Mongoose MongoDB cleanup for all descendant comments.
+
+### 👥 User Profiles & Communities
+- **Clerk Authentication:** Multi-tenant sign-in, sign-up, and onboarding flows with protected middleware routes.
+- **Activity & Search:** Real-time debounced user search, unread activity notification badges, and community management.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Category | Technology |
-| :--- | :--- |
-| **Framework** | Next.js 13.4 (App Router + Server Actions) |
-| **Language** | TypeScript 5 |
-| **Database & ORM** | MongoDB Atlas + Mongoose |
-| **Authentication** | Clerk (`@clerk/nextjs`) |
-| **File Storage** | UploadThing (`@uploadthing/react`) |
-| **Styling & Design** | Tailwind CSS + Custom CSS Variables |
-| **UI Components** | shadcn/ui + Radix UI Primitives |
-| **Forms & Validation** | React Hook Form + Zod |
-| **Deployment** | Vercel Serverless Platform |
+| Domain | Technology | Description |
+| :--- | :--- | :--- |
+| **Framework** | Next.js 13.4 | App Router, Server Actions, Server Components |
+| **Language** | TypeScript 5 | End-to-end type safety |
+| **AI Model** | Ollama (`llama3.2`) | Local LLM inference engine for content generation |
+| **Database & ORM** | MongoDB Atlas + Mongoose | Schema definitions, index optimization, and aggregation |
+| **Authentication** | Clerk (`@clerk/nextjs`) | Session management, OAuth, and protected middleware |
+| **File & Image Storage**| Cloudinary (`cloudinary`) | Media uploads, CDN delivery, image transformations |
+| **Styling & Icons** | Tailwind CSS + Lucide Icons | Responsive layout, theme CSS variables, UI icons |
+| **UI Components** | shadcn/ui + Radix UI | Accessible modal dialogs, tabs, and form primitives |
+| **Form Management** | React Hook Form + Zod | Type-safe form validation and error handling |
+| **Deployment** | Vercel | Global CDN edge deployment |
 
 ---
 
@@ -75,35 +86,37 @@ This application provides a seamless experience for creators and communities:
 
 ```text
 ├── app/
-│   ├── (auth)/             # Auth layouts, sign-in, sign-up, onboarding routes
-│   ├── (root)/             # Core app views (Home, Profile, Search, Activity, Communities)
-│   ├── globals.css         # CSS tokens, theme variables, and momentum scroll rules
-│   └── icon.svg            # Custom SVG browser tab favicon
+│   ├── (auth)/             # Authentication layouts, Sign-in, Sign-up, Onboarding
+│   ├── (root)/             # Core application routes (Home, Profile, Thread details, Search, Activity)
+│   ├── api/
+│   │   └── ollama/         # Local Ollama AI generation API endpoint
+│   ├── globals.css         # CSS design tokens, mode-aware focus rules, theme variables
+│   └── icon.svg            # Custom SVG tab favicon
 ├── components/
-│   ├── cards/              # ThreadCard, UserCard, CommunityCard
-│   ├── forms/              # PostThreads, Comment, AccountProfile forms
-│   └── shared/             # Topbar, LeftSidebar, RightSidebar, ThemeAccentPicker
+│   ├── cards/              # ThreadCard (with Lightbox & Modal Portals), UserCard, CommunityCard
+│   ├── forms/              # PostThreads (with AI Assistant tag), Comment, AccountProfile
+│   ├── shared/             # Topbar, LeftSidebar, RightSidebar, ThemeAccentPicker, ThreadsTab
+│   └── ui/                 # Reusable UI primitives (Button, Textarea, Tabs, Input, Form)
 ├── lib/
-│   ├── actions/            # Server actions (thread.actions, user.actions, community.actions)
+│   ├── actions/            # Server Actions (thread.actions, user.actions, upload.action, community.actions)
 │   ├── models/             # Mongoose schemas (Thread, User, Community)
-│   └── validation/         # Zod schema definitions
-├── public/assets/          # Vector SVG icons & custom logo
-└── middleware.ts           # Clerk Edge Middleware & route matching rules
+│   └── validation/         # Zod schemas (ThreadValidation, UserValidation, CommentValidation)
+└── middleware.ts           # Clerk Edge Middleware route protection
 ```
 
 ---
 
-## 🚀 Quick Start / Getting Started
+## 🚀 Getting Started & Local Setup
 
 ### Prerequisites
 
-Ensure your environment meets the following requirements before installation:
+Ensure you have the following installed on your environment:
 - **Node.js:** v18.17.0 or higher
-- **Package Manager:** `npm` v9+ or `yarn` / `pnpm`
-- **Database:** MongoDB Atlas connection string (or local MongoDB instance)
-- **Services:** Active accounts on Clerk and UploadThing
+- **npm:** v9+
+- **MongoDB:** A MongoDB Atlas cluster URI or local MongoDB instance
+- **Ollama:** *(Optional, for AI Assistant)* Installed on macOS/Linux/Windows
 
-### Installation & Setup
+### Installation
 
 1. **Clone the repository:**
    ```bash
@@ -117,89 +130,73 @@ Ensure your environment meets the following requirements before installation:
    ```
 
 3. **Configure Environment Variables:**
-   Create a `.env.local` file in the root directory (see template below).
+   Create a `.env.local` file in the root folder (see template below).
 
-4. **Launch Development Server:**
+4. **Start Development Server:**
    ```bash
    npm run dev
    ```
 
-5. **Access Application:**
-   Navigate to [http://localhost:3000](http://localhost:3000) in your web browser.
+5. **Open Browser:**
+   Navigate to [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 🔑 Environment Variables & Configuration
+### 🤖 Ollama Local AI Setup (Optional)
 
-Create a `.env.local` file in the project root with the following structure:
+To enable the local AI Assistant feature:
+
+1. **Install Ollama on your Mac:**
+   ```bash
+   brew install ollama
+   ```
+   *(Or download from [ollama.com](https://ollama.com))*
+
+2. **Download & Run Llama 3.2:**
+   ```bash
+   ollama run llama3.2
+   ```
+
+3. **Test AI Assistant:**
+   Open the Thread Creation page (`/create-thread`), click **`✨ Use Assistance`**, and generate thread posts instantly!
+
+---
+
+## 🔑 Environment Variables
+
+Create `.env.local` in your root directory with the following keys:
 
 ```env
-# Database Connection
+# MongoDB Connection
 MONGODB_URL="mongodb+srv://<username>:<password>@cluster.mongodb.net/threads?retryWrites=true&w=majority"
 
 # Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
 CLERK_SECRET_KEY="sk_test_..."
-
-# Clerk Route Redirects
 NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
 NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
 NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/"
 NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/onboarding"
 
-# UploadThing Storage
-UPLOADTHING_SECRET="sk_live_..."
-UPLOADTHING_APP_ID="your-app-id"
+# Cloudinary Media Storage
+CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
+
+# Optional: Custom Ollama Endpoint (Defaults to http://127.0.0.1:11434/api/generate)
+OLLAMA_URL="http://127.0.0.1:11434/api/generate"
 ```
 
-> [!IMPORTANT]
-> Never commit `.env.local` or secret production credentials to public repositories.
-
 ---
 
-## 💡 Usage Examples & Core Workflows
+## 🧠 Core Engineering Highlights
 
-### Creating a Thread
-1. Click **Create Thread** in the left navigation sidebar.
-2. Enter your content in the form and click **Post Thread**.
-3. The server action automatically revalidates the home feed and redirects to `/`.
-
-### Dark / Light / System Mode & Accent Switching
-1. Use the **Sun/Moon** icon in the Topbar header to toggle theme modes instantly.
-2. Open **Profile → Appearance** to select your preferred accent color (**Obsidian Indigo**, **Cyber Emerald**, **Electric Blue**, or **Sunset Amber**).
-
-### Deleting a Thread (Author Only)
-1. Navigate to your **Profile** page (`/profile/[id]`).
-2. Locate your thread and click the **Trash icon**.
-3. Confirm deletion to recursively remove the thread and all nested replies globally.
-
----
-
-## 🗺️ Roadmap
-
-- [x] Full Light / Dark / System theme engine with zero FOUC
-- [x] Author profile thread deletion & recursive purging
-- [x] Live activity notifications with badge counts
-- [x] Custom vector logo & SVG favicon system
-- [x] Production Vercel deployment with Edge middleware
-- [ ] Push notifications for new replies
-- [ ] Direct messaging between creators
-- [ ] Media attachments in comments
-
----
-
-## 🤝 Contributing
-
-Contributions make the open-source community an incredible place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'feat: add some AmazingFeature'`)
-4. Push to the Branch (`git checkout -b feature/AmazingFeature`)
-5. Open a Pull Request
+- **React Portals (`createPortal`)**: Solved CSS backdrop-filter stacking context limitations by rendering custom modal dialogs and full-screen image lightboxes directly onto `document.body`.
+- **Mode-Aware Focus Borders**: Developed zero-flash, high-visibility focus borders that dynamically shift to solid black in light mode and solid white in dark mode via CSS variables (`--focus-border`).
+- **Server Actions for Data Mutations**: Used Next.js 13 `revalidatePath` to trigger instant re-renders upon creating threads, liking posts, or adding comments without client-side state drift.
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more details.

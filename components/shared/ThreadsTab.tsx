@@ -31,6 +31,7 @@ const ThreadsTab = async ({
               currentUser={currentUserId}
               parentId={reply.parentId}
               content={reply.text}
+              image={reply.image}
               author={reply.author}
               community={reply.community}
               createdAt={reply.createdAt}
@@ -59,6 +60,7 @@ const ThreadsTab = async ({
               currentUser={currentUserId}
               parentId={thread.parentId}
               content={thread.text}
+              image={thread.image}
               author={thread.author}
               community={thread.community}
               createdAt={thread.createdAt}
@@ -92,6 +94,7 @@ const ThreadsTab = async ({
             currentUser={currentUserId}
             parentId={thread.parentId}
             content={thread.text}
+            image={thread.image}
             author={
               accountType === "User"
                 ? { name: result.name, image: result.image, id: result.id }
