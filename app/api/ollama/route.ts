@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     console.error("Ollama connection error:", error);
     return NextResponse.json(
       {
-        error: "Ollama is not running locally. Please start Ollama on your Mac.",
+        error: "Ollama runs locally on your Mac/PC. Please start Ollama on your computer with 'ollama run llama3.2'.",
         isOffline: true,
         details: error.message,
       },
