@@ -129,7 +129,7 @@ export default function ThemeAccentPicker() {
 
           {/* Custom Premium Popup Overlay Menu */}
           {isOpen && (
-            <div className='absolute left-0 top-full z-50 mt-2.5 w-full rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-2 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-150'>
+            <div className='absolute left-0 top-full z-[9999] mt-2.5 w-full rounded-2xl border border-[var(--glass-border)] bg-dark-3 dark:bg-dark-3 p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-150' style={{ backgroundColor: 'var(--dropdown-bg, #101012)' }}>
               <div className='flex flex-col gap-1'>
                 {ACCENTS.map((accent) => {
                   const isSelected = activeAccent === accent.name;

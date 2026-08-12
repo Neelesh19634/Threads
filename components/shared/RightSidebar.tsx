@@ -37,7 +37,7 @@ async function RightSidebar() {
               />
             ))
           ) : (
-            <div className='rounded-xl border border-dashed border-[var(--border-color)] bg-[var(--card-bg)] p-4 text-center'>
+            <div className='rounded-2xl border border-dashed border-[var(--glass-border)] bg-[var(--card-bg)] p-5 text-center backdrop-blur-xl shadow-sm'>
               <p className='text-small-regular text-[var(--text-muted)]'>No communities yet</p>
             </div>
           )}
@@ -59,7 +59,7 @@ async function RightSidebar() {
               />
             ))
           ) : (
-            <div className='rounded-xl border border-dashed border-[var(--border-color)] bg-[var(--card-bg)] p-4 text-center'>
+            <div className='rounded-2xl border border-dashed border-[var(--glass-border)] bg-[var(--card-bg)] p-5 text-center backdrop-blur-xl shadow-sm'>
               <p className='text-small-regular text-[var(--text-muted)]'>No users yet</p>
             </div>
           )}

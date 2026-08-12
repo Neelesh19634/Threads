@@ -66,8 +66,8 @@ function Bottombar() {
               key={link.label}
               className={`bottombar_link transition-all ${
                 isActive
-                  ? "bg-primary-500 text-light-1 shadow-md shadow-indigo-500/20 font-semibold"
-                  : "text-light-2 hover:bg-white/[0.06]"
+                  ? "bg-primary-500 text-light-1 shadow-lg border border-primary-400/40 font-semibold backdrop-blur-md"
+                  : "text-[var(--text-primary)] opacity-80 hover:opacity-100 hover:bg-[var(--card-bg)] hover:backdrop-blur-md"
               }`}
               aria-current={isActive ? "page" : undefined}
             >

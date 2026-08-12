@@ -17,7 +17,7 @@ const UserCard = ({ id, name, username, imgUrl, personType }: Props) => {
   const isCommunity = personType === "Community";
 
   return (
-    <article className='user-card group border border-[var(--border-color)] bg-[var(--card-bg)] backdrop-blur-md transition-all hover:border-primary-500'>
+    <article className='user-card group border border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-xl shadow-[var(--glass-shadow)] transition-all duration-300 hover:border-primary-500/40 hover:shadow-[var(--glass-shadow-hover)] hover:-translate-y-0.5'>
       <div className='user-card_avatar'>
         <div className='relative h-12 w-12 flex-shrink-0 transition-transform group-hover:scale-105'>
           <Image

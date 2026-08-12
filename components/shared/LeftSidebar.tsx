@@ -65,10 +65,10 @@ function LeftSidebar() {
             <Link
               href={targetRoute}
               key={link.label}
-              className={`leftsidebar_link group border border-transparent ${
+              className={`leftsidebar_link group border ${
                 isActive
-                  ? "bg-primary-500 text-light-1 shadow-lg shadow-indigo-500/20 font-semibold hover:bg-primary-500/90"
-                  : "text-[var(--text-primary)] opacity-80 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/[0.06]"
+                  ? "bg-primary-500 text-light-1 shadow-lg border-primary-400/40 font-semibold backdrop-blur-md"
+                  : "text-[var(--text-primary)] border-transparent hover:bg-black/5 dark:hover:bg-white/[0.06] hover:border-[var(--glass-border)] hover:shadow-md hover:backdrop-blur-md"
               }`}
               aria-current={isActive ? "page" : undefined}
             >

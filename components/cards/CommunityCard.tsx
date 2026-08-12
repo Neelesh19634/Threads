@@ -16,7 +16,7 @@ interface Props {
 
 function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
   return (
-    <article className='community-card group border border-[var(--border-color)] bg-[var(--card-bg)] backdrop-blur-md transition-all hover:border-primary-500/40 hover:shadow-xl'>
+    <article className='community-card group border border-[var(--glass-border)] bg-[var(--card-bg)] backdrop-blur-xl shadow-[var(--glass-shadow)] transition-all duration-300 hover:border-primary-500/40 hover:shadow-[var(--glass-shadow-hover)] hover:-translate-y-0.5'>
       <div className='flex items-center gap-4'>
         <Link href={`/communities/${id}`} className='relative h-14 w-14 flex-shrink-0 transition-transform group-hover:scale-105'>
           <Image

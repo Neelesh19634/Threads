@@ -66,6 +66,13 @@ const ThreadCard = ({
   const [isImageOpen, setIsImageOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const MAX_CHAR_LENGTH = 200;
+  const isLongText = content && content.length > MAX_CHAR_LENGTH;
+  const displayedText = isLongText && !isExpanded
+    ? `${content.slice(0, MAX_CHAR_LENGTH).trim()}...`
+    : content;
 
   useEffect(() => {
     setMounted(true);
@@ -149,10 +156,10 @@ const ThreadCard = ({
 
   return (
     <article
-      className={`relative flex w-full flex-col transition-all duration-200 ${
+      className={`relative flex w-full flex-col transition-all duration-300 ${
         isComment
           ? "px-0 sx:px-7"
-          : "rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-6 shadow-md backdrop-blur-md"
+          : "rounded-2xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-6 shadow-[var(--glass-shadow)] backdrop-blur-xl hover:border-primary-500/30 hover:shadow-[var(--glass-shadow-hover)] hover:-translate-y-0.5"
       } ${isDeleting ? "opacity-50 pointer-events-none" : ""}`}
     >
       {toastMessage && (
@@ -219,7 +226,21 @@ const ThreadCard = ({
               </div>
             </div>
 
-            <p className='mt-2.5 text-sm-regular leading-relaxed text-[var(--text-primary)]'>{content}</p>
+            <p className='mt-2.5 text-sm-regular leading-relaxed text-[var(--text-primary)] whitespace-pre-line'>
+              {displayedText}
+              {isLongText && (
+                <button
+                  type='button'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsExpanded(!isExpanded);
+                  }}
+                  className='ml-1.5 inline-flex items-center text-xs-semibold text-primary-500 hover:underline focus:outline-none'
+                >
+                  {isExpanded ? "show less" : "more..."}
+                </button>
+              )}
+            </p>
 
             {image && (
               <div

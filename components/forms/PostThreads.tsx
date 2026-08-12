@@ -34,12 +34,12 @@ function PostThread({ userId }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  // Ollama AI State
+  // Gemini AI State
   const [showAiPanel, setShowAiPanel] = useState(false);
   const [aiTopic, setAiTopic] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [aiStatusMessage, setAiStatusMessage] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [isAiOffline, setIsAiOffline] = useState(false);
 
   const { organization } = useOrganization();
 
@@ -71,40 +71,36 @@ function PostThread({ userId }: Props) {
     setImagePreview(null);
   };
 
-  const handleAiAction = async (action: "generate" | "improve") => {
+  const handleAiAction = async (action: "generate" | "improve" | "concise" | "expand") => {
     const currentThreadText = form.getValues("thread") || "";
     if (action === "generate" && !aiTopic.trim()) {
       setAiError("Enter a topic or idea for AI to write about.");
       return;
     }
-    if (action === "improve" && !currentThreadText.trim()) {
-      setAiError("Write some text in the box first so AI can polish it!");
+    if ((action === "improve" || action === "concise" || action === "expand") && !currentThreadText.trim()) {
+      setAiError("Write some text in the box first so AI can work on it!");
       return;
     }
 
     setIsGenerating(true);
     setAiError(null);
-    setIsAiOffline(false);
+    setAiStatusMessage("Generating content ...");
 
     try {
-      const res = await fetch("/api/ollama", {
+      const res = await fetch("/api/ai/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: aiTopic,
           draft: currentThreadText,
           action,
-          model: "llama3.2",
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        if (data.isOffline) {
-          setIsAiOffline(true);
-        }
-        setAiError(data.error || "Failed to generate text with Ollama.");
+        setAiError(data.error || "Failed to generate text.");
         return;
       }
 
@@ -113,13 +109,15 @@ function PostThread({ userId }: Props) {
         setAiError(null);
         setShowAiPanel(false);
         setAiTopic("");
+      } else {
+        setAiError("unable to generate text. Please try again.");
       }
     } catch (err: any) {
-      console.error("AI Error:", err);
-      setIsAiOffline(true);
-      setAiError("Unable to connect to Ollama. Make sure Ollama is running on your Mac.");
+      console.error(" Error:", err);
+      setAiError("AI generation is temporarily unavailable. Please try again later.");
     } finally {
       setIsGenerating(false);
+      setAiStatusMessage(null);
     }
   };
 
@@ -171,7 +169,7 @@ function PostThread({ userId }: Props) {
               </div>
 
               {/* Textarea container with embedded AI assistance tag at bottom right */}
-              <FormControl className='relative flex flex-col justify-between min-h-[240px] rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] p-4 text-[var(--text-primary)] shadow-inner backdrop-blur-md transition-all duration-200 focus-border-theme'>
+              <FormControl className='relative flex flex-col justify-between min-h-[240px] rounded-2xl border border-[var(--glass-border)] bg-[var(--card-bg)] p-4 text-[var(--text-primary)] shadow-[var(--glass-shadow)] backdrop-blur-xl transition-all duration-300 hover:border-primary-500/30 focus-within:border-primary-500 focus-within:shadow-[0_0_25px_rgba(135,126,255,0.25)]'>
                 <div className='w-full h-full flex flex-col'>
                   <Textarea
                     rows={8}
@@ -234,7 +232,7 @@ function PostThread({ userId }: Props) {
                           type='button'
                           onClick={() => setShowAiPanel(true)}
                           className='flex items-center gap-1.5 rounded-full border border-primary-500/30 bg-primary-500/10 px-3.5 py-1.5 text-xs-semibold text-primary-500 shadow-sm backdrop-blur-md transition hover:bg-primary-500/20 active:scale-95'
-                          title='Use AI Assistant (Ollama)'
+                          title='Use AI Assistant (Gemini AI)'
                         >
                           <Sparkles className='h-3.5 w-3.5 text-amber-400' />
                           <span>Use Assistance</span>
@@ -257,18 +255,19 @@ function PostThread({ userId }: Props) {
                 </div>
               </FormControl>
 
-              {/* Error or Offline Alert */}
+              {/* AI Status & Progress Message */}
+              {isGenerating && aiStatusMessage && (
+                <div className='mt-2 flex items-center gap-2 rounded-xl border border-primary-500/30 bg-primary-500/10 p-3 text-xs-semibold text-primary-400 animate-pulse'>
+                  <RefreshCw className='h-3.5 w-3.5 animate-spin flex-shrink-0' />
+                  <span>{aiStatusMessage}</span>
+                </div>
+              )}
+
+              {/* Error Alert */}
               {aiError && (
-                <div className={`mt-1 flex items-start gap-2.5 rounded-xl border p-3 text-xs-semibold ${isAiOffline ? 'border-amber-500/30 bg-amber-500/10 text-amber-300' : 'border-rose-500/30 bg-rose-500/10 text-rose-300'}`}>
+                <div className='mt-2 flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs-semibold text-rose-300'>
                   <AlertCircle className='h-4 w-4 flex-shrink-0 mt-0.5' />
-                  <div className='flex flex-col gap-0.5'>
-                    <span>{aiError}</span>
-                    {isAiOffline && (
-                      <span className='font-mono text-[11px] opacity-90'>
-                        Run in terminal: <code className='rounded bg-black/40 px-1.5 py-0.5 text-light-1'>ollama run llama3.2</code>
-                      </span>
-                    )}
-                  </div>
+                  <span>{aiError}</span>
                 </div>
               )}
 
@@ -300,7 +299,7 @@ function PostThread({ userId }: Props) {
               </button>
             </div>
           ) : (
-            <label className='flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--border-color)] bg-[var(--card-bg)] p-6 text-[var(--text-muted)] transition hover:border-primary-500 hover:text-[var(--text-primary)]'>
+            <label className='flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-dashed border-[var(--glass-border)] bg-[var(--card-bg)] p-6 text-[var(--text-muted)] backdrop-blur-xl shadow-[var(--glass-shadow)] transition-all duration-200 hover:border-primary-500 hover:text-[var(--text-primary)] hover:shadow-lg'>
               <ImageIcon className='h-6 w-6 text-primary-500' />
               <span className='text-sm-semibold'>Click to upload an image</span>
               <input
@@ -316,7 +315,7 @@ function PostThread({ userId }: Props) {
         <Button
           type='submit'
           disabled={isSubmitting || currentLength === 0}
-          className='w-full rounded-xl bg-primary-500 py-3 text-body-semibold text-light-1 shadow-lg shadow-indigo-500/20 transition hover:opacity-90 active:scale-[0.99] disabled:opacity-50 sm:w-fit sm:px-8'
+          className='w-full rounded-2xl bg-primary-500/90 backdrop-blur-md py-3 text-body-semibold text-light-1 shadow-lg shadow-primary-500/25 transition-all duration-200 hover:bg-primary-500 hover:shadow-xl hover:shadow-primary-500/30 active:scale-[0.99] disabled:opacity-50 sm:w-fit sm:px-8'
         >
           {isSubmitting ? (
             <div className='flex items-center gap-2'>

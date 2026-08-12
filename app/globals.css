@@ -4,33 +4,43 @@
 
 @layer base {
   :root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --card-bg: #ffffff;
-    --card-hover: #f1f5f9;
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --card-bg: rgba(255, 255, 255, 0.72);
+    --card-hover: rgba(255, 255, 255, 0.88);
     --text-primary: #0f172a;
     --text-secondary: #334155;
     --text-muted: #64748b;
-    --border-color: rgba(0, 0, 0, 0.12);
-    --focus-border: #000000;
-    --topbar-bg: rgba(255, 255, 255, 0.92);
-    --sidebar-bg: #ffffff;
+    --border-color: rgba(0, 0, 0, 0.08);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-border-hover: rgba(135, 126, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    --glass-shadow-hover: 0 14px 40px 0 rgba(135, 126, 255, 0.15);
+    --focus-border: #877eff;
+    --topbar-bg: rgba(255, 255, 255, 0.75);
+    --sidebar-bg: rgba(255, 255, 255, 0.65);
+    --dropdown-bg: #f8fafc;
     --primary-500: #877eff;
   }
 
   html.dark,
   [data-theme="dark"] {
-    --bg-primary: #0b0c0e;
-    --bg-secondary: #12141a;
-    --card-bg: #12141a;
-    --card-hover: #181b22;
+    --bg-primary: #090a0d;
+    --bg-secondary: #0f1117;
+    --card-bg: rgba(18, 20, 26, 0.68);
+    --card-hover: rgba(26, 30, 40, 0.8);
     --text-primary: #ffffff;
-    --text-secondary: #e2e8f0;
+    --text-secondary: #cbd5e1;
     --text-muted: #64748b;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --focus-border: #ffffff;
-    --topbar-bg: rgba(11, 12, 14, 0.88);
-    --sidebar-bg: #0b0c0e;
+    --border-color: rgba(255, 255, 255, 0.09);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-border-hover: rgba(135, 126, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.42);
+    --glass-shadow-hover: 0 14px 44px 0 rgba(135, 126, 255, 0.2);
+    --focus-border: #877eff;
+    --topbar-bg: rgba(9, 10, 13, 0.75);
+    --sidebar-bg: rgba(9, 10, 13, 0.65);
+    --dropdown-bg: #101012;
   }
 
   [data-accent="emerald"] {
@@ -52,9 +62,14 @@
 
   body {
     background-color: var(--bg-primary);
+    background-image: 
+      radial-gradient(at 10% 10%, rgba(135, 126, 255, 0.15) 0px, transparent 50%),
+      radial-gradient(at 90% 90%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.06) 0px, transparent 60%);
+    background-attachment: fixed;
     color: var(--text-primary);
     scroll-behavior: smooth;
-    @apply antialiased transition-colors duration-200;
+    @apply antialiased transition-colors duration-300;
   }
 
   ::selection {
@@ -66,7 +81,7 @@
 @layer components {
   /* Main Container */
   .main-container {
-    background-color: var(--bg-primary);
+    background-color: transparent;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     @apply flex min-h-screen flex-1 flex-col items-center px-4 pb-10 pt-28 max-md:pb-32 sm:px-10;
@@ -81,8 +96,14 @@
   /* Activity Card */
   .activity-card {
     background-color: var(--card-bg);
-    border-color: var(--border-color);
-    @apply flex items-center gap-3 rounded-xl border p-4 shadow-sm backdrop-blur-md transition-all hover:border-white/[0.15];
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    @apply flex items-center gap-3.5 rounded-2xl border p-4 sm:p-5 backdrop-blur-xl transition-all duration-300;
+  }
+  .activity-card:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-hover);
+    transform: translateY(-2px);
   }
 
   /* No Result */
@@ -94,44 +115,64 @@
   /* Community Card */
   .community-card {
     background-color: var(--card-bg);
-    border-color: var(--border-color);
-    @apply w-full rounded-2xl border px-5 py-6 shadow-md backdrop-blur-md transition-all sm:w-96;
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    @apply w-full rounded-2xl border px-6 py-6 backdrop-blur-xl transition-all duration-300 sm:w-96;
+  }
+  .community-card:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-hover);
+    transform: translateY(-2px);
   }
 
   .community-card_btn {
-    @apply rounded-xl bg-primary-500 px-5 py-2 text-small-semibold text-light-1 transition hover:opacity-90 active:scale-95 !important;
+    background-color: var(--primary-500) !important;
+    backdrop-filter: blur(8px) !important;
+    @apply rounded-xl px-5 py-2 text-small-semibold text-light-1 shadow-md transition-all duration-200 hover:opacity-90 active:scale-95 !important;
   }
 
   /* Thread card bar */
   .thread-card_bar {
-    @apply relative mt-2 w-0.5 grow rounded-full bg-black/10 dark:bg-white/10;
+    background: linear-gradient(to bottom, rgba(135, 126, 255, 0.4), rgba(168, 85, 247, 0.2), transparent);
+    @apply relative mt-2.5 w-0.5 grow rounded-full;
   }
 
   /* User Card */
   .user-card {
     background-color: var(--card-bg);
-    border-color: var(--border-color);
-    @apply flex flex-col justify-between gap-4 rounded-xl border p-4 backdrop-blur-md transition-all xs:flex-row xs:items-center;
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    @apply flex flex-col justify-between gap-4 rounded-2xl border p-4 sm:p-5 backdrop-blur-xl transition-all duration-300 xs:flex-row xs:items-center;
+  }
+  .user-card:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-hover);
+    transform: translateY(-2px);
   }
 
   .user-card_avatar {
-    @apply flex flex-1 items-start justify-start gap-3 xs:items-center;
+    @apply flex flex-1 items-start justify-start gap-3.5 xs:items-center;
   }
 
   .user-card_btn {
-    @apply h-auto min-w-[74px] rounded-xl bg-primary-500 px-4 py-2 text-[13px] font-semibold text-light-1 transition hover:opacity-90 active:scale-95 !important;
+    background-color: var(--primary-500) !important;
+    backdrop-filter: blur(8px) !important;
+    @apply h-auto min-w-[76px] rounded-xl px-4 py-2 text-[13px] font-semibold text-light-1 shadow-md transition-all duration-200 hover:opacity-90 active:scale-95 !important;
   }
 
   /* Search bar */
   .searchbar {
     background-color: var(--card-bg);
-    border-color: var(--border-color);
-    @apply flex items-center gap-3 rounded-xl border px-4 py-2.5 transition-all;
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    @apply flex items-center gap-3 rounded-2xl border px-4 py-3 backdrop-blur-xl transition-all duration-300;
   }
-
+  .searchbar:hover {
+    border-color: var(--glass-border-hover);
+  }
   .searchbar:focus-within {
-    border-color: var(--focus-border) !important;
-    box-shadow: 0 0 0 1px var(--focus-border) !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 20px rgba(135, 126, 255, 0.25) !important;
   }
 
   .searchbar_input {
@@ -142,15 +183,17 @@
   /* Topbar */
   .topbar {
     background-color: var(--topbar-bg);
-    border-color: var(--border-color);
-    @apply fixed top-0 z-30 flex w-full items-center justify-between border-b px-6 py-3.5 backdrop-blur-xl;
+    border-color: var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+    @apply fixed top-0 z-30 flex w-full items-center justify-between border-b px-6 py-3.5 backdrop-blur-xl transition-all duration-300;
   }
 
   /* Bottombar */
   .bottombar {
     background-color: var(--topbar-bg);
-    border-color: var(--border-color);
-    @apply fixed bottom-0 z-10 w-full rounded-t-2xl border-t p-3 backdrop-blur-xl xs:px-7 md:hidden;
+    border-color: var(--glass-border);
+    box-shadow: 0 -8px 32px 0 rgba(0, 0, 0, 0.12);
+    @apply fixed bottom-0 z-10 w-full rounded-t-3xl border-t p-3 backdrop-blur-2xl xs:px-7 md:hidden;
   }
 
   .bottombar_container {
@@ -158,31 +201,31 @@
   }
 
   .bottombar_link {
-    @apply relative flex flex-col items-center gap-1 rounded-xl p-2.5 text-subtle-medium transition-all sm:flex-1;
+    @apply relative flex flex-col items-center gap-1.5 rounded-2xl p-2.5 text-subtle-medium transition-all duration-200 sm:flex-1;
   }
 
   /* Left Sidebar */
   .leftsidebar {
     background-color: var(--sidebar-bg);
-    border-color: var(--border-color);
+    border-color: var(--glass-border);
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r pb-6 pt-24 max-md:hidden lg:w-[260px];
+    @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r pb-6 pt-24 max-md:hidden lg:w-[260px] backdrop-blur-xl transition-all duration-300;
   }
 
   .leftsidebar_link {
-    @apply relative flex items-center justify-start gap-4 rounded-xl px-4 py-3.5 transition-all;
+    @apply relative flex items-center justify-start gap-4 rounded-2xl px-4 py-3.5 transition-all duration-200;
   }
 
   /* Right Sidebar */
   .rightsidebar {
     background-color: var(--sidebar-bg);
-    border-color: var(--border-color);
+    border-color: var(--glass-border);
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    @apply sticky right-0 top-0 z-20 flex h-screen w-[360px] flex-col justify-start gap-10 overflow-auto border-l px-8 pb-6 pt-24 max-xl:hidden;
+    @apply sticky right-0 top-0 z-20 flex h-screen w-[360px] flex-col justify-start gap-10 overflow-auto border-l px-7 pb-6 pt-24 max-xl:hidden backdrop-blur-xl transition-all duration-300;
   }
 
   .pagination {
@@ -196,8 +239,8 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -205,21 +248,27 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(140, 140, 140, 0.25);
+    background: rgba(140, 140, 140, 0.2);
     border-radius: 9999px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(140, 140, 140, 0.4);
+    background: rgba(135, 126, 255, 0.4);
   }
 }
 
 /* Clerk Trigger Styles */
 .cl-organizationSwitcherTrigger {
   background-color: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
+  border-color: var(--glass-border) !important;
   color: var(--text-primary) !important;
-  @apply rounded-xl border px-3.5 py-2 transition-all !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: var(--glass-shadow) !important;
+  @apply rounded-2xl border px-3.5 py-2 transition-all duration-200 !important;
+}
+
+.cl-organizationSwitcherTrigger:hover {
+  border-color: var(--glass-border-hover) !important;
 }
 
 .cl-organizationSwitcherTrigger .cl-userPreview .cl-userPreviewTextContainer,
@@ -232,7 +281,15 @@
 .tab {
   background-color: var(--card-bg) !important;
   color: var(--text-muted) !important;
-  @apply flex min-h-[46px] flex-1 items-center justify-center gap-2 rounded-xl text-small-medium transition-all data-[state=active]:bg-primary-500 data-[state=active]:text-light-1 data-[state=active]:shadow-md !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  @apply flex min-h-[46px] flex-1 items-center justify-center gap-2 rounded-2xl text-small-medium transition-all duration-200 !important;
+}
+
+.tab[data-state="active"] {
+  background-color: var(--primary-500) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(135, 126, 255, 0.3) !important;
 }
 
 .no-focus {
@@ -240,14 +297,19 @@
 }
 
 .focus-border-theme:focus-within {
-  border-color: var(--focus-border) !important;
-  box-shadow: 0 0 0 1px var(--focus-border) !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 20px rgba(135, 126, 255, 0.25) !important;
 }
 
 /* Account Profile */
 .account-form_image-label {
   background-color: var(--card-bg) !important;
-  @apply flex h-24 w-24 items-center justify-center rounded-full border border-white/[0.1] transition hover:border-white/20 !important;
+  backdrop-filter: blur(16px) !important;
+  @apply flex h-24 w-24 items-center justify-center rounded-full border border-white/[0.15] shadow-lg transition-all duration-200 !important;
+}
+
+.account-form_image-label:hover {
+  border-color: var(--primary-500) !important;
 }
 
 .account-form_image-input {
@@ -257,27 +319,36 @@
 .account-form_input {
   background-color: var(--card-bg) !important;
   color: var(--text-primary) !important;
-  border-color: var(--border-color) !important;
-  @apply border transition-all !important;
+  border-color: var(--glass-border) !important;
+  backdrop-filter: blur(16px) !important;
+  @apply border rounded-2xl transition-all duration-200 !important;
 }
 
 .account-form_input:focus {
-  border-color: var(--focus-border) !important;
-  box-shadow: 0 0 0 1px var(--focus-border) !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 20px rgba(135, 126, 255, 0.25) !important;
 }
 
 /* Comment Form */
 .comment-form {
   background-color: var(--card-bg) !important;
-  border-color: var(--border-color) !important;
-  @apply mt-6 flex items-center gap-4 rounded-xl border px-4 py-3 max-xs:flex-col transition-all !important;
+  border-color: var(--glass-border) !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: var(--glass-shadow) !important;
+  @apply mt-6 flex items-center gap-4 rounded-2xl border px-4 py-3 max-xs:flex-col transition-all duration-200 !important;
+}
+
+.comment-form:hover {
+  border-color: var(--glass-border-hover) !important;
 }
 
 .comment-form:focus-within {
-  border-color: var(--focus-border) !important;
-  box-shadow: 0 0 0 1px var(--focus-border) !important;
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 20px rgba(135, 126, 255, 0.25) !important;
 }
 
 .comment-form_btn {
-  @apply rounded-xl bg-primary-500 px-6 py-2 text-small-semibold text-light-1 transition hover:opacity-90 active:scale-95 max-xs:w-full !important;
+  background-color: var(--primary-500) !important;
+  backdrop-filter: blur(8px) !important;
+  @apply rounded-xl px-6 py-2 text-small-semibold text-light-1 shadow-md transition-all duration-200 hover:opacity-90 active:scale-95 max-xs:w-full !important;
 }
